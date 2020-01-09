@@ -141,7 +141,7 @@ I2C::init()
 	// call the probe function to check whether the device is present
 	ret = probe();
 
-	if (ret != OK) {
+	if (ret != PX4_OK) {
 		DEVICE_DEBUG("probe failed");
 		goto out;
 	}
@@ -149,7 +149,7 @@ I2C::init()
 	// do base class init, which will create device node, etc
 	ret = CDev::init();
 
-	if (ret != OK) {
+	if (ret != PX4_OK) {
 		DEVICE_DEBUG("cdev init failed");
 		goto out;
 	}
@@ -182,7 +182,7 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 	do {
 		DEVICE_DEBUG("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
-		px4_i2c_msg_t msgv[2] {};
+		i2c_msg_s msgv[2] {};
 		unsigned msgs = 0;
 
 		if (send_len > 0) {

@@ -34,8 +34,6 @@
 
 
 __BEGIN_DECLS
-#include <nuttx/spi/spi.h>
-#include <nuttx/i2c/i2c_master.h>
 
 /* For historical reasons (NuttX STM32 numbering) PX4 bus numbering is 1 based
  * All PX4 code, including, board code is written to assuming 1 based numbering.
@@ -46,9 +44,6 @@ __BEGIN_DECLS
 
 #define PX4_BUS_NUMBER_TO_PX4(x)        ((x)+PX4_BUS_OFFSET)  /* Use to define Zero based to match Nuttx Driver but provide 1 based to PX4 */
 #define PX4_BUS_NUMBER_FROM_PX4(x)      ((x)-PX4_BUS_OFFSET)  /* Use to map PX4 1 based to NuttX driver 0 based */
-
-#define px4_enter_critical_section()       enter_critical_section()
-#define px4_leave_critical_section(flags)  leave_critical_section(flags)
 
 #include <arch/board/board.h>
 

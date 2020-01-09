@@ -44,10 +44,7 @@
 #include <px4_platform_common/posix.h>
 #include <px4_platform_common/time.h>
 
-#include "DevMgr.hpp"
-
 using namespace std;
-using namespace DriverFramework;
 
 const cdev::px4_file_operations_t cdev::CDev::fops = {};
 
@@ -305,7 +302,7 @@ extern "C" {
 		return ret;
 	}
 
-	int px4_poll(px4_pollfd_struct_t *fds, nfds_t nfds, int timeout)
+	int px4_poll(px4_pollfd_struct_t *fds, unsigned int nfds, int timeout)
 	{
 		if (nfds == 0) {
 			PX4_WARN("px4_poll with no fds");
@@ -315,7 +312,6 @@ extern "C" {
 		px4_sem_t sem;
 		int count = 0;
 		int ret = -1;
-		unsigned int i;
 
 		const unsigned NAMELEN = 32;
 		char thread_name[NAMELEN] = {};
@@ -339,7 +335,7 @@ extern "C" {
 		// Go through all fds and check them for a pollable state
 		bool fd_pollable = false;
 
-		for (i = 0; i < nfds; ++i) {
+		for (unsigned int i = 0; i < nfds; ++i) {
 			fds[i].sem     = &sem;
 			fds[i].revents = 0;
 			fds[i].priv    = nullptr;
@@ -393,7 +389,7 @@ extern "C" {
 
 			// We have waited now (or not, depending on timeout),
 			// go through all fds and count how many have data
-			for (i = 0; i < nfds; ++i) {
+			for (unsigned int i = 0; i < nfds; ++i) {
 
 				cdev::CDev *dev = get_vdev(fds[i].fd);
 
@@ -439,7 +435,6 @@ extern "C" {
 
 	void px4_show_devices()
 	{
-		int i = 0;
 		PX4_INFO("PX4 Devices:");
 
 		pthread_mutex_lock(&devmutex);
@@ -451,20 +446,6 @@ extern "C" {
 		}
 
 		pthread_mutex_unlock(&devmutex);
-
-		PX4_INFO("DF Devices:");
-		const char *dev_path;
-		unsigned int index = 0;
-		i = 0;
-
-		do {
-			// Each look increments index and returns -1 if end reached
-			i = DevMgr::getNextDeviceName(index, &dev_path);
-
-			if (i == 0) {
-				PX4_INFO("   %s", dev_path);
-			}
-		} while (i == 0);
 	}
 
 	void px4_show_topics()
